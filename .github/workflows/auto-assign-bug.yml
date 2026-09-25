@@ -1,0 +1,26 @@
+
+name: Auto-assign bug issues
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  issues: write
+
+jobs:
+  assign-bug:
+    if: github.event.label.name == 'bug'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Assign bug to repository owner
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.addAssignees({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              assignees: ['konstmalinin-maker']
+            });
